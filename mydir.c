@@ -4,14 +4,19 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <errno.h>
+#include <string.h>
 
-int main(){
+int main(int argc, char *argv[]){
   struct stat *x = malloc(sizeof(struct stat));
   struct dirent *d;
   int bytes;
-  printf("****** Statistics for directory: . ******\n");
-  DIR *dir = opendir(".");
-  if (dir != NULL){
+  DIR *dir = opendir(argv[1]);
+  if (dir == NULL){
+    printf("errno: %d error: %s\n", errno, strerror(errno));
+    return 0;
+  } else {
+    printf("****** Statistics for directory: %s ******\n", argv[1]);
     while ((d= readdir(dir)) != NULL){
       if (d->d_type != 4){
         printf("%s (Regular File)\n", d->d_name);
